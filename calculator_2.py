@@ -3,10 +3,13 @@ import sys
 def name_dict(n):
 	dic = {}
 	for i in n:
-		try:
-			dic[i.split(':')[0]] = int(i.split(':')[1])
-		except ValueError:
-			print("Please input a number")
+		if i.count(':') == 1 and i.find(':') > 0 and i.find(':') < len(i) - 1:
+			try:
+				dic[i.split(':')[0]] = int(i.split(':')[1])
+			except ValueError:
+				print("Parameter Error")
+		else:
+			print("Parameter Error")
 	return dic
 
 def calulator(dic):
@@ -33,7 +36,7 @@ def calulator(dic):
 
 def print_f(dic):
 	for key, value in dic.items():
-		print(key, ':', format(value, '.2f'))
+		print(key + ':' + format(value, '.2f'))
 
 
 if __name__ == "__main__":
