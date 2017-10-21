@@ -1,4 +1,0 @@
-print("hello world")
-
-new = 'This word was push in shiyanlou.com'
-print(new)
