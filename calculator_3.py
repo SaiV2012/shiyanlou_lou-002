@@ -86,9 +86,9 @@ ls_all = []
 for key, value in userdata.get_user().items():
 	ls_temp = []
 	if value > conf.get_config()['JiShuH']:
-		ss = conf.get_config()['JiShuH']
+		ss = conf.get_config()['JiShuH'] * ss_rate
 	elif value < conf.get_config()['JiShuL']:
-		ss = conf.get_config()['JiShuL']
+		ss = conf.get_config()['JiShuL'] * ss_rate
 	else:
 		ss = value * ss_rate
 	tax = userdata.calculator(ss)
