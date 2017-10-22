@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
+from multiprocessing import Process, Queue
 import sys
 import csv
 import os
+
+queue = Queue()
 
 args = sys.argv[1:]
 path = '/home/shiyanlou/'
@@ -46,6 +49,7 @@ class UserData(object):
 			for i in file.readlines():
 				self.userdata[i.split(',')[0]] = int(i.split(',')[1].strip())
 		return self.userdata
+		queue.put(self.userdata)
 
 	def calculator_ss(self, dict_conf, ex_salary):
 		ss_rate = 0
@@ -60,6 +64,7 @@ class UserData(object):
 		else:
 			ss = ex_salary * ss_rate
 		return ss
+		queue.put(ss)
 
 	def calculator_tax(self, dict_conf, ex_salary):
 		temp = ex_salary - self.calculator_ss(dict_conf, ex_salary) - 3500
@@ -86,15 +91,17 @@ class UserData(object):
 		return salary
 
 	def print_f(self, file, ls):
-		with open(file, "w") as csvfile:
-			writer = csv.writer(csvfile)
-			writer.writerows(ls)
-
+		if os.path.isfile(file):
+			with open(file, "a") as file:
+				csv.writer(file).writerow(ls)
+		else:
+			with open(file, "w") as file:
+				csv.writer(file).writerow(ls)
 
 if __name__ == '__main__':
 	conf = Configure(configfile)
 	userdata = UserData(userfile)
-	ls_all = []
+
 	for k, v in userdata.get_user().items():
 		ls_temp = []
 		ls_temp.append(k)
@@ -104,5 +111,4 @@ if __name__ == '__main__':
 		ls_temp.append(format(ss, '.2f'))
 		ls_temp.append(format(tax, '.2f'))
 		ls_temp.append(format((v-ss-tax), '.2f'))
-		ls_all.append(ls_temp)
-	userdata.print_f(gongzifile, ls_all)
+		userdata.print_f(gongzifile, ls_temp)
