@@ -25,12 +25,6 @@ else:
 	print("File Error")
 	sys.exit()
 
-if configfile[-3:] == 'cfg' and userfile[-3:] == 'csv':
-	pass
-else:
-	print("File Type Error")
-	sys.exit()
-
 class Configure(object):
 	def __init__(self, file):
 		self.file = file
@@ -53,8 +47,22 @@ class UserData(object):
 				self.userdata[i.split(',')[0]] = int(i.split(',')[1].strip())
 		return self.userdata
 
-	def calculator(self, ss):
-		temp = value - ss - 3500
+	def calculator_ss(self, dict_conf, ex_salary):
+		ss_rate = 0
+		for value in dict_conf.values():
+			if value > 1:
+				continue
+			ss_rate = ss_rate + value
+		if ex_salary > dict_conf['JiShuH']:
+			ss = dict_conf['JiShuH'] * ss_rate
+		elif ex_salary < dict_conf['JiShuL']:
+			ss = dict_conf['JiShuL'] * ss_rate
+		else:
+			ss = ex_salary * ss_rate
+		return ss
+
+	def calculator_tax(self, dict_conf, ex_salary):
+		temp = ex_salary - self.calculator_ss(dict_conf, ex_salary) - 3500
 		if temp < 0:
 			tax = 0
 		elif temp < 1500:
@@ -73,33 +81,28 @@ class UserData(object):
 			tax = temp * 0.045 - 13505
 		return tax
 
-conf = Configure(configfile)
-userdata = UserData(userfile)
+	def calculator_salary(self):
+		salary = ex_salary - self.calculator_ss(dict_conf, ex_salary) - self.calculator_tax(dict_conf, ex_salary)
+		return salary
 
-ss_rate = 0
-for value in conf.get_config().values():
-	if value > 1:
-		continue
-	ss_rate = ss_rate + value
+	def print_f(self, file, ls):
+		with open(file, "w") as csvfile:
+			writer = csv.writer(csvfile)
+			writer.writerows(ls)
 
-ls_all = []
-for key, value in userdata.get_user().items():
-	ls_temp = []
-	if value > conf.get_config()['JiShuH']:
-		ss = conf.get_config()['JiShuH'] * ss_rate
-	elif value < conf.get_config()['JiShuL']:
-		ss = conf.get_config()['JiShuL'] * ss_rate
-	else:
-		ss = value * ss_rate
-	tax = userdata.calculator(ss)
-	salary = value - ss - tax
-	ls_temp.append(key)
-	ls_temp.append(value)
-	ls_temp.append(format(ss, '.2f'))
-	ls_temp.append(format(tax, '.2f'))
-	ls_temp.append(format(salary, '.2f'))
-	ls_all.append(ls_temp)
 
-with open(gongzifile, "w") as csvfile:
-	writer = csv.writer(csvfile)
-	writer.writerows(ls_all)
+if __name__ == '__main__':
+	conf = Configure(configfile)
+	userdata = UserData(userfile)
+	ls_all = []
+	for k, v in userdata.get_user().items():
+		ls_temp = []
+		ls_temp.append(k)
+		ls_temp.append(v)
+		ss = userdata.calculator_ss(conf.get_config(), v)
+		tax = userdata.calculator_tax(conf.get_config(), v)
+		ls_temp.append(format(ss, '.2f'))
+		ls_temp.append(format(tax, '.2f'))
+		ls_temp.append(format((v-ss-tax), '.2f'))
+		ls_all.append(ls_temp)
+	userdata.print_f(gongzifile, ls_all)
