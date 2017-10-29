@@ -17,7 +17,7 @@ class File(db.Model):
 	created_time = db.Column(db.DateTime)
 	category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
 	category = db.relationship('Category',backref=db.backref('files', lazy='dynamic'))
-	cotent = db.Column(db.Text)
+	content = db.Column(db.Text)
 
 	def __init__(self, title, created_time, category, content):
 		self.title = title
@@ -26,7 +26,7 @@ class File(db.Model):
 		self.content = content
 
 	def __repr__(self):
-		return '<File %r)>' % self.title
+		return '<%s, %s, %s, %s)>' % (self.title, self.content, self.created_time, self.category)
 
 class Category(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -36,7 +36,7 @@ class Category(db.Model):
 		self.name = name
 
 	def __repr__(self):
-		return '<Category %r>' % self.name
+		return '<Category %s>' % self.name
 
 @app.route('/add')
 def add():
@@ -58,16 +58,13 @@ def add():
 
 @app.route('/')
 def index():
-	ls_temp = File.query.all()
-	return render_template('index.html', ls_temp=ls_temp)
+	ls = File.query.all()
+	return render_template('index.html', ls=ls)
 
 @app.route('/files/<file_id>')
-def file(filename):
-	path = os.path.dirname(os.path.abspath('__file__')) + '/files'
-	filename = filename + '.json'
-	with open(path + '/' + filename, 'r') as file:
-		content = json.loads(file.read())
-	return render_template('file.html', content=content, filename=filename)
+def file(file_id):
+	file_info = File.query.get_or_404(file_id)
+	return render_template('file.html', file_info=file_info)
 
 @app.errorhandler(404)
 def not_found(error):

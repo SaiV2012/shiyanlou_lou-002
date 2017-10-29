@@ -1,1 +1,5 @@
-{{ ls_temp }}
+{% for i in ls %}
+	<p>
+		<a href="localhost:3000/files/{{i.id}}"> {{ i.title }} <a>
+	</p>
+{% endfor %}
