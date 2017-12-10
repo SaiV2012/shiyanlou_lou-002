@@ -1,0 +1,25 @@
+{% extends "admin/index.html" %}
+{% from "macros.html" import render_pagination %}
+
+{% block title %}
+Admin - live
+{% endblock %}
+
+{% block operation %}
+<a href="{{ url_for('admin.create_live') }}" type="button" class="btn btn-primary">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	Add Live
+</a>
+{% endblock %}
+
+{% block admin %}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Live ID</th>
+			<th>Live Name</th>
+			<th>Live User</th>
+		</tr>
+	</thead>
+</table>
+{% endblock %}
