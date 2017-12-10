@@ -20,6 +20,16 @@ Admin - live
 			<th>Live Name</th>
 			<th>Live User</th>
 		</tr>
+		<tbody>
+			{% for live in pagination.items %}
+			<tr>
+				<td>{{ live.id }}</td>
+				<td>{{ live.live_name }}</td>
+				<td>{{ live.live_user }}</td>			
+			</tr>
+			{% endfor %}
+		</tbody>	
 	</thead>
 </table>
+{{ render_pagination(pagination, 'admin.live') }}
 {% endblock %}

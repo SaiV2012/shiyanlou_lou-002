@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError, TextAreaField, IntegerField
 from wtforms.validators import Length, Email, EqualTo, Required, URL, NumberRange
-from simpledu.models import db, User, Course
+from simpledu.models import db, User, Course, Live
 
 
 class LoginForm(FlaskForm):
@@ -72,7 +72,7 @@ class CourseForm(FlaskForm):
 
 
 class LiveForm(FlaskForm):
-    live_id = IntegerField('Live ID', validators=[Required(), NumberRange(min=1, message="Invalidate Live ID")])
+    id = IntegerField('Live ID', validators=[Required(), NumberRange(min=1, message="Invalidate Live ID")])
     live_name = StringField('Live Name', validators=[Required(), Length(5, 32)])
     live_user = StringField('Live User', validators=[Required(), Length(5, 32)])
     submit = SubmitField('Submit')

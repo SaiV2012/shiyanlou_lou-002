@@ -49,7 +49,13 @@ def edit_course(course_id):
 @admin.route('/live')
 @admin_required
 def live():
-    return render_template('admin/live.html')
+    page = request.args.get('page', default=1, type=int)
+    pagination = Live.query.paginate(
+        page=page,
+        per_page=current_app.config['ADMIN_PER_PAGE'],
+        error_out=False
+        )
+    return render_template('admin/live.html', pagination=pagination)
 
 @admin.route('/live/create', methods=['GET', 'POST'])
 @admin_required

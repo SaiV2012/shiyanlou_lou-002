@@ -93,32 +93,7 @@ class Chapter(Base):
 
 class Live(Base):
     __tablename__ = 'live'
-
+    
     id = db.Column(db.Integer, primary_key=True)
     live_name = db.Column(db.String(128), unique=True, index=True)
     live_user = db.Column(db.String(128), unique=True, index=True)
-
-    def __repr__(self):
-        return '<Live:{}>'.format(self.name)
-
-    @property
-    def url(self):
-        return url_for('live.index', live_id=self.id)
-
-class Chapter22(Base):
-    __tablename__ = 'chapter22'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True, index=True)
-    description = db.Column(db.String(256))
-    vedio_url = db.Column(db.String(256))
-    vedio_duration = db.Column(db.String(24))
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete="CASCADE"))
-    course = db.relationship('Course', uselist=False)
-
-    def __repr__(self):
-        return '<Chapter22:{}>'.format(self.name)
-
-    @property
-    def url(self):
-        return url_for('course.chapter22', course_id=self.course.id, chapter_id=self.id)
