@@ -69,15 +69,15 @@ class CourseForm(FlaskForm):
         return course
 
 class UserForm(FlaskForm):
-    user_id = StringField('User ID', validators=[Required(), NumberRange(min=1, message='Invalid User ID')])
-    name = StringField('User Name', validators=[Required(), Length(3, 24)])
+    user_id = IntegerField('User ID', validators=[Required(), NumberRange(min=1, message='Invalid User ID')])
+    username = StringField('User Name', validators=[Required(), Length(3, 24)])
     email = StringField('User Email', validators=[Required(), Email()])
     password = PasswordField('User Password', validators=[Required(), Length(6, 24)])
     submit = SubmitField('Submit')
 
-    def validate_user_id(self,field):
-        if User.query.get(self.user_id.data):
-            raise ValidationError('User ID had Exist')
+    #def validate_user_id(self,field):
+    #    if User.query.get(self.user_id.data):
+    #        raise ValidationError('User ID had Exist')
 
     def create_user(self):
         user = User()

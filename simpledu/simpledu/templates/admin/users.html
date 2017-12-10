@@ -29,10 +29,10 @@ Admin - users
 				<td>{{ user.email }}</td>
 				<td>
 					<div class="btn-group" role="group">
-						<a href="" type="button" class="btn btn-default" title="Edit">
+						<a href="{{ url_for('admin.edit_user', user_id=user.id) }}" type="button" class="btn btn-default" title="Edit">
 							<span class="glyphicon glyphicon-pencil" title="Edit" aria-hidden="true"></span>
 						</a>
-						<a href="" type="button" class="btn btn-default" title="Delete">
+						<a href="{{ url_for('admin.delete_user', user_id=user.id) }}" type="button" class="btn btn-default" title="Delete">
 							<span class="glyphicon glyphicon-trash" title="Delete" aria-hidden="true"></span>
 						</a>
 					</div>

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
 from simpledu.decorators import admin_required
-from simpledu.models import Course, User
+from simpledu.models import db, Course, User
 from simpledu.forms import CourseForm, UserForm
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -62,3 +62,23 @@ def create_user():
         flash('User Create Done', 'success')
         return redirect(url_for('admin.users'))
     return render_template('admin/create_user.html', form=form)
+
+@admin.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = UserForm(obj=user)
+    if form.validate_on_submit():
+        form.update_user(user)
+        flash('User Info Updated', 'success')
+        return redirect(url_for('admin.users'))
+    return render_template('admin/edit_user.html', form=form, user=user)
+
+@admin.route('/users/<int:user_id>/delete')
+@admin_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User has been deleted', 'success')
+    return redirect(url_for('admin.users'))
